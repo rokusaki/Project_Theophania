@@ -5,15 +5,15 @@ using System.Collections;
 
 public class GUICommandPanelBase : MonoBehaviour {
 
+    public GameObject MovingPanel;
+
     public Button moveButton;
     public Button actionButton;
     public Button waitButton;
     public Button backButton;
 
-    private Vector3 moveButtonPosition;
-    private Vector3 actionButtonPosition;
-    private Vector3 waitButtonPosition;
-    private Vector3 backButtonPosition;
+    private GameObject movingPanel;
+    private UnitController activeUnit;
 
     TweenCallback OnCompleteDestroyObject;
 
@@ -37,6 +37,11 @@ public class GUICommandPanelBase : MonoBehaviour {
         StartCoroutine(StartInit());
     }
 
+    public void InitButton(UnitController activeUnit)
+    {
+        this.activeUnit = activeUnit;
+    }
+
     IEnumerator StartInit()
     {
        
@@ -45,38 +50,33 @@ public class GUICommandPanelBase : MonoBehaviour {
         waitButton.onClick.AddListener(() => OnWaitClick());
         backButton.onClick.AddListener(() => OnBackClick());
 
-
         yield return new WaitForEndOfFrame();
         PlayButtonOnTween(true);
 
-
-
     }
+
+    
 
     void PlayButtonOnTween(bool isFadeIn)
     {
+        //LockButton(true);
         if (isFadeIn)
         {
             moveButton.transform.DOScale(1, .5f).SetEase(Ease.OutBack).SetDelay(.1f);
-            moveButton.transform.DOMove(Vector3.zero, .5f).From().SetEase(Ease.OutBack).SetDelay(.1f);
+            moveButton.transform.DOLocalMove(Vector3.zero, .5f).From().SetEase(Ease.OutBack).SetDelay(.1f);
             actionButton.transform.DOScale(1, .5f).SetEase(Ease.OutBack).SetDelay(.2f);
-            actionButton.transform.DOMove(Vector3.zero, .5f).From().SetEase(Ease.OutBack).SetDelay(.2f);
+            actionButton.transform.DOLocalMove(Vector3.zero, .5f).From().SetEase(Ease.OutBack).SetDelay(.2f);
             waitButton.transform.DOScale(1, .5f).SetEase(Ease.OutBack).SetDelay(.3f);
-            waitButton.transform.DOMove(Vector3.zero, .5f).From().SetEase(Ease.OutBack).SetDelay(.3f);
+            waitButton.transform.DOLocalMove(Vector3.zero, .5f).From().SetEase(Ease.OutBack).SetDelay(.3f);
             backButton.transform.DOScale(1, .5f).SetEase(Ease.OutBack).SetDelay(.4f);
-            backButton.transform.DOMove(Vector3.zero, .5f).From().SetEase(Ease.OutBack).SetDelay(.4f);
+            backButton.transform.DOLocalMove(Vector3.zero, .5f).From().SetEase(Ease.OutBack).SetDelay(.4f).OnComplete(OnCompleteFadeIn);
         }
         else
         {
-            moveButton.transform.DOScale(0, .25f).SetEase(Ease.InBack).SetDelay(.1f);
-           // moveButton.transform.DOMove(Vector3.zero, .5f).SetEase(Ease.OutBack).SetDelay(.1f);
-            actionButton.transform.DOScale(0, .25f).SetEase(Ease.InBack).SetDelay(.2f);
-           // actionButton.transform.DOMove(Vector3.zero, .5f).SetEase(Ease.OutBack).SetDelay(.2f);
+            moveButton.transform.DOScale(0, .25f).SetEase(Ease.InBack).SetDelay(.1f);     
+            actionButton.transform.DOScale(0, .25f).SetEase(Ease.InBack).SetDelay(.2f);    
             waitButton.transform.DOScale(0, .25f).SetEase(Ease.InBack).SetDelay(.3f);
-           // waitButton.transform.DOMove(Vector3.zero, .5f).SetEase(Ease.OutBack).SetDelay(.3f);
             backButton.transform.DOScale(0, .25f).SetEase(Ease.InBack).SetDelay(.4f).OnComplete(OnCompleteDestroyObject);
-           // backButton.transform.DOMove(Vector3.zero, .5f).SetEase(Ease.OutBack).SetDelay(.4f);
-
         }
 
         
@@ -84,8 +84,14 @@ public class GUICommandPanelBase : MonoBehaviour {
 
     void DestroyThis()
     {
+        EventManager.Instance.QueueEvent(new UnitEndTurnEvent(activeUnit));
         Destroy(gameObject);
 
+    }
+
+    void OnCompleteFadeIn()
+    {
+        LockButton(false);
     }
 
     void FadeOut()
@@ -96,6 +102,7 @@ public class GUICommandPanelBase : MonoBehaviour {
 
     void OnMoveClick()
     {
+        
         Debug.Log("Move Click");
     }
 
@@ -107,12 +114,14 @@ public class GUICommandPanelBase : MonoBehaviour {
     void OnWaitClick()
     {
         Debug.Log("Wait Click");
+        FadeOut();
     }
 
     void OnBackClick()
     {
         Debug.Log("Back Click");
-        FadeOut();
+        
+        
     }
 
     protected virtual void LockButton(bool lockButton)

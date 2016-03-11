@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class BaseUnitAttribute  {
+
 
     private string name;
     private int id;
@@ -47,7 +49,7 @@ public class BaseUnitAttribute  {
         this.maxMP = InitMaxMp(magic, resistance);
         this.Hp = this.maxHP;
         this.Mp = this.maxMP;
-
+        this.speed += baseUnitAttribute.agility;
     }
 
     public BaseUnitAttribute(int str , int agi , int mag , int vit , int res)
@@ -61,6 +63,7 @@ public class BaseUnitAttribute  {
         this.maxMP = InitMaxMp(mag,res);
         this.Hp = this.maxHP;
         this.Mp = this.maxMP;
+        this.speed += agi;
     }
 
     int InitMaxHp(int str , int vit)
@@ -121,6 +124,16 @@ public class BaseUnitAttribute  {
                 else mp = newMP;
             }
         }
+    }
+
+    public int MaxHP
+    {
+        get { return maxHP; }
+    }
+
+    public int MaxMP
+    {
+        get { return maxMP; }
     }
 
     public int Stregnth
