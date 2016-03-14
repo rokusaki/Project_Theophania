@@ -19,15 +19,14 @@ public class EquipmentController : MonoBehaviour
     void Start()
     {
 
-        StartCoroutine(LateGetWeapon());
     }
 
-    IEnumerator LateGetWeapon()
+    void LateStart()
     {
-        yield return new WaitForSeconds(1);
-        Debug.Log(CollectWeapon(0).Name);
+
 
     }
+
 
     #region Storer
     void StoreWeapon(BaseWeapon weapon)
@@ -64,28 +63,52 @@ public class EquipmentController : MonoBehaviour
 
     #region Collector
 
-    BaseWeapon CollectWeapon(int weaponID)
+    bool TryGetWeapon(int weaponID, out BaseWeapon baseWeapon )
+    {
+        return (baseWeapon = GetWeapon(weaponID)) == null ?
+            false : true ;
+    }
+
+    bool TryGetArmor(int armorID, out BaseArmor baseArmor)
+    {
+        return (baseArmor = GetArmor(armorID)) == null ?
+            false : true;
+    }
+
+    bool TryGetAccessory(int accessoryID, out BaseAccessory baseAccesory)
+    {
+        return (baseAccesory = GetAccessory(accessoryID)) == null ?
+            false : true;
+    }
+
+    bool TryGetOffHand(int offHandID, out BaseOffHand baseOffHand)
+    {
+        return (baseOffHand = GetOffHand(offHandID)) == null ?
+            false : true;
+    }
+
+    BaseWeapon GetWeapon(int weaponID)
     {
 
         return (BaseWeapon)AllWeapon.instance.GetEquipmentByID(weaponID);
     }
 
-    void CollectArmor(int armorID)
+    BaseArmor GetArmor(int armorID)
     {
 
-
+        return (BaseArmor)AllWeapon.instance.GetEquipmentByID(armorID);
     }
 
-    void CollectAccessory(int accID)
+    BaseAccessory GetAccessory(int accID)
     {
 
-
+        return (BaseAccessory)AllWeapon.instance.GetEquipmentByID(accID);
     }
 
-    void CollectOffHand(int offHandID)
+    BaseOffHand GetOffHand(int offHandID)
     {
 
-
+        return (BaseOffHand)AllWeapon.instance.GetEquipmentByID(offHandID);
     }
 
     #endregion

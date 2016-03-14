@@ -24,37 +24,11 @@ public class AllWeapon : MonoBehaviour , IEquipmentManager
 
     void InitialAllWeapon()
     {
-        BaseWeapon newWeapon = CreateShortSword();
-        Debug.Log(newWeapon.ID);
-        allWeapon.Add(newWeapon.ID, newWeapon);
+        
 
     }
 
-	BaseWeapon CreateWeaponBaseMethod(BaseWeapon baseWeapon)
-    {
-        BaseWeapon newWeapon = baseWeapon;
-
-        return newWeapon;
-    }
-
-    BaseWeapon CreateShortSword()
-    {
-        string name = "Short Sword";
-        int id = 0,
-            atk = 10,
-            def = 0,
-            mag = 2,
-            res = 0,
-            spd = 5,
-            hit = 10,
-            dodge = 5,
-            blk = 5;
-
-        BaseWeapon thisWeaponAttribute = new BaseWeapon(atk,def,mag,res,spd,hit,dodge,blk);
-
-       return CreateWeaponBaseMethod(new Sword(id,name, thisWeaponAttribute));
-
-    }
+	
 
     public BaseEquipment GetEquipmentByID(int id)
     {
